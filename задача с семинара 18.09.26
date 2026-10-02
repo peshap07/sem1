@@ -1,0 +1,53 @@
+CREATE TABLE owners (
+    owner_id     serial PRIMARY KEY,
+    last_name    varchar(64) NOT NULL,
+    first_name   varchar(64) NOT NULL,
+    phone        varchar(20),
+    email        varchar(64),
+    passport     varchar(20) NOT NULL UNIQUE,
+    created_at   date NOT NULL DEFAULT current_date
+);
+
+CREATE TABLE properties (
+    property_id   serial PRIMARY KEY,
+    address       varchar(200) NOT NULL,
+    property_type varchar(50) NOT NULL,
+    area          numeric(10,2) NOT NULL CHECK (area > 0),
+    price         numeric(15,2) NOT NULL CHECK (price > 0),
+    rooms         integer NOT NULL CHECK (rooms > 0),
+    build_year    integer,
+    owner_id      integer NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES owners(owner_id)
+);
+
+INSERT INTO owners (last_name, first_name, phone, email, passport, created_at) VALUES
+('Иванов', 'Александр', '+79001112233', 'alex.ivanov@example.com', '4500123456', '2023-03-15'),
+('Петрова', 'Мария', '+79002223344', 'maria.petrova@example.com', '4501654321', '2023-04-10'),
+('Сидоров', 'Дмитрий', '+79003334455', 'dmitry.sidorov@example.com', '4502987654', '2023-05-20'),
+('Кузнецова', 'Елена', '+79004445566', 'elena.kuznetsova@example.com', '4503112233', '2023-06-05'),
+('Смирнов', 'Андрей', '+79005556677', 'andrey.smirnov@example.com', '4504445566', '2023-07-12'),
+('Васильева', 'Ольга', '+79006667788', 'olga.vasilieva@example.com', '4505778899', '2023-08-01'),
+('Михайлов', 'Сергей', '+79007778899', 'sergey.mikhailov@example.com', '4506223344', '2023-09-18'),
+('Новиков', 'Игорь', '+79008889900', 'igor.novikov@example.com', '4507556677', '2023-10-10'),
+('Федорова', 'Анна', '+79009990011', 'anna.fedorova@example.com', '4508889900', '2023-11-05'),
+('Морозов', 'Павел', '+79000001122', 'pavel.morozov@example.com', '4509112233', '2023-12-20');
+
+INSERT INTO properties (address, property_type, area, price, rooms, build_year, owner_id) VALUES
+('г. Москва, ул. Ленина, д. 1, кв. 5', 'квартира', 68.50, 12500000.00, 2, 2015, 1),
+('г. Санкт-Петербург, пр. Невский, д. 10, кв. 23', 'апартаменты', 45.30, 9800000.00, 1, 2020, 2),
+('Московская обл., г. Химки, ул. Садовая, д. 7', 'дом', 150.00, 18500000.00, 4, 2018, 3),
+('г. Казань, ул. Баумана, д. 3, кв. 12', 'квартира', 52.10, 8200000.00, 2, 2019, 4),
+('г. Екатеринбург, ул. Малышева, д. 25, кв. 88', 'квартира', 85.70, 11300000.00, 3, 2017, 5),
+('Ленинградская обл., пос. Репино, ул. Лесная, д. 3', 'коттедж', 210.40, 24700000.00, 5, 2021, 6),
+('г. Нижний Новгород, ул. Большая Покровская, д. 15, кв. 4', 'квартира', 38.90, 6900000.00, 1, 2022, 7),
+('г. Краснодар, ул. Красная, д. 9, кв. 33', 'таунхаус', 95.60, 13200000.00, 3, 2020, 8),
+('г. Ростов-на-Дону, пр. Ворошиловский, д. 40, кв. 17', 'квартира', 72.30, 9100000.00, 2, 2016, 9),
+('г. Самара, ул. Куйбышева, д. 5, кв. 99', 'студия', 28.40, 4800000.00, 1, 2023, 10);
+
+SELECT * FROM owners;
+SELECT * FROM properties;
+
+SELECT o.last_name, o.first_name, p.address, p.property_type, p.price
+FROM properties p
+JOIN owners o ON p.owner_id = o.owner_id
+ORDER BY p.price DESC;
